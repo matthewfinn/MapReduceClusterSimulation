@@ -18,20 +18,22 @@ public class MapReduce {
 
 		MapReduce map = new MapReduce();
 
-
 		int threads = Integer.parseInt(args[0]); //maximum number of threads allowed......doesn't have to be cmd param necessarily.
 
 		String fname1 = args[1]; File f1 = new File(fname1);
 		String fname2 = args[2]; File f2 = new File(fname2);
-		//String fname3 = args[3]; File f3 = new File(fname3);
-		//String fname4 = args[4]; File f4 = new File(fname4);
-		//String fname5 = args[5]; File f5 = new File(fname5);
+		String fname3 = args[3]; File f3 = new File(fname3);
+		String fname4 = args[4]; File f4 = new File(fname4);
+		String fname5 = args[5]; File f5 = new File(fname5);
 
 		ExecutorService exe = Executors.newFixedThreadPool(10);
 
 		HashMap<String, String> files = new HashMap<String,String>();
 		files.put(f1.getName(), map.readFile(f1));
 		files.put(f2.getName(), map.readFile(f2));
+		files.put(f3.getName(), map.readFile(f3));
+		files.put(f4.getName(), map.readFile(f4));
+		files.put(f5.getName(), map.readFile(f5));
 
 
 		// APPROACH #3: Distributed MapReduce
@@ -132,6 +134,8 @@ public class MapReduce {
 			System.out.println(output);
 		}
 	}
+
+	//reads first letter of each word in the file
 	public String readFile(File file) {
 
 		StringBuilder sb = new StringBuilder();
@@ -145,11 +149,10 @@ public class MapReduce {
 		while (scanner.hasNextLine()) {
 
 			String s = scanner.next();
-			sb.append(s.substring(0, 1) + " ");
+			sb.append(s.substring(0, 1) + " "); //Gets first letter of each word
 
 		}
-		System.out.println(sb.toString());
-		return sb.toString();
+		return sb.toString().toLowerCase();
 	}
 	public static void map(String file, String contents, List<MappedItem> mappedItems) {
 		String[] words = contents.trim().split("\\s+");
