@@ -26,7 +26,7 @@ public class MapReduce {
 		String fname4 = args[4]; File f4 = new File(fname4);
 		String fname5 = args[5]; File f5 = new File(fname5);
 
-		ExecutorService exe = Executors.newFixedThreadPool(10);
+		ExecutorService exe = Executors.newFixedThreadPool(threads);
 
 		HashMap<String, String> files = new HashMap<String,String>();
 		files.put(f1.getName(), map.readFile(f1));
@@ -34,6 +34,7 @@ public class MapReduce {
 		files.put(f3.getName(), map.readFile(f3));
 		files.put(f4.getName(), map.readFile(f4));
 		files.put(f5.getName(), map.readFile(f5));
+		long startTime = System.nanoTime();
 
 
 		// APPROACH #3: Distributed MapReduce
@@ -66,17 +67,15 @@ public class MapReduce {
 					}
 				});
 				mapCluster.add(t);
-				t.start();
 			}
 
-			// wait for mapping phase to be over:
+			// execute threads
 			for(Thread t : mapCluster) {
-				try {
-					t.join();
-				} catch(InterruptedException e) {
-					throw new RuntimeException(e);
-				}
+				exe.execute(t);
 			}
+			exe.shutdown(); //kill executor
+			while (!exe.isTerminated());
+
 
 			// GROUP:
 
@@ -96,6 +95,8 @@ public class MapReduce {
 			}
 
 			// REDUCE:
+
+			exe = Executors.newFixedThreadPool(threads);
 
 			final ReduceCallback<String, String, Integer> reduceCallback = new ReduceCallback<String, String, Integer>() {
 				@Override
@@ -119,18 +120,20 @@ public class MapReduce {
 					}
 				});
 				reduceCluster.add(t);
-				t.start();
 			}
 
-			// wait for reducing phase to be over:
+			// wait for reducing phase to be over: Being run on threads
 			for(Thread t : reduceCluster) {
-				try {
-					t.join();
-				} catch(InterruptedException e) {
-					throw new RuntimeException(e);
-				}
+				exe.execute(t);
 			}
 
+			exe.shutdown();
+			while (!exe.isTerminated());
+
+			long end = System.nanoTime();
+			double seconds = ((double) (end - startTime) / 1000000000);
+			System.out.println("Time taken to execute \n-> " + seconds + " SECONDS");
+			System.out.println("Character Count Being Run On " + threads + " Threads.");
 			System.out.println(output);
 		}
 	}
