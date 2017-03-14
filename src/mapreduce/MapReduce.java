@@ -34,8 +34,6 @@ public class MapReduce {
 		files.put(f3.getName(), map.readFile(f3));
 		files.put(f4.getName(), map.readFile(f4));
 		files.put(f5.getName(), map.readFile(f5));
-		long startTime = System.nanoTime();
-
 
 		// APPROACH #3: Distributed MapReduce
 		{
@@ -130,9 +128,6 @@ public class MapReduce {
 			exe.shutdown();
 			while (!exe.isTerminated());
 
-			long end = System.nanoTime();
-			double seconds = ((double) (end - startTime) / 1000000000);
-			System.out.println("Time taken to execute \n-> " + seconds + " SECONDS");
 			System.out.println("Character Count Being Run On " + threads + " Threads.");
 			System.out.println(output);
 		}
