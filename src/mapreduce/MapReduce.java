@@ -26,6 +26,13 @@ public class MapReduce {
 		String fname4 = args[4]; File f4 = new File(fname4);
 		String fname5 = args[5]; File f5 = new File(fname5);
 
+		System.out.println(f1.getName());
+		System.out.println(f2.getName());
+		System.out.println(f3.getName());
+		System.out.println(f4.getName());
+		System.out.println(f5.getName());
+
+
 		ExecutorService exe = Executors.newFixedThreadPool(threads);
 
 		HashMap<String, String> files = new HashMap<String,String>();
@@ -144,11 +151,9 @@ public class MapReduce {
 			e.printStackTrace();
 		}
 
-		while (scanner.hasNextLine()) {
-
-			String s = scanner.next();
+		while (scanner.hasNext()) {
+			String s = scanner.next().replaceAll("[^a-zA-Z]+"," ").toLowerCase();;
 			sb.append(s.substring(0, 1) + " "); //Gets first letter of each word
-
 		}
 		return sb.toString().toLowerCase();
 	}
