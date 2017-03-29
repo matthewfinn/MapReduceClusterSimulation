@@ -1,3 +1,10 @@
+/*
+ * Name: Matthew Finn
+ * Id: 13480362
+ * 
+ * Name: Shane McInerney
+ * Id: 13339141
+ * */
 package mapreduce;
 
 import java.io.File;
@@ -26,6 +33,7 @@ public class MapReduce {
 		String fname4 = args[4]; File f4 = new File(fname4);
 		String fname5 = args[5]; File f5 = new File(fname5);
 
+		System.out.println("File Names: ");
 		System.out.println(f1.getName());
 		System.out.println(f2.getName());
 		System.out.println(f3.getName());
@@ -68,6 +76,7 @@ public class MapReduce {
 				Thread t = new Thread(new Runnable() {
 					@Override
 					public void run() {
+						
 						map(file, contents, mapCallback);
 					}
 				});
@@ -77,6 +86,7 @@ public class MapReduce {
 			// execute threads
 			for(Thread t : mapCluster) {
 				exe.execute(t);
+				System.out.println("Thread ID: "+t.getName() +" Executed");
 			}
 			exe.shutdown(); //kill executor
 			while (!exe.isTerminated());
@@ -130,6 +140,7 @@ public class MapReduce {
 			// wait for reducing phase to be over: Being run on threads
 			for(Thread t : reduceCluster) {
 				exe.execute(t);
+				
 			}
 
 			exe.shutdown();
@@ -137,6 +148,7 @@ public class MapReduce {
 
 			System.out.println("Character Count Being Run On " + threads + " Threads.");
 			System.out.println(output);
+			
 		}
 	}
 
