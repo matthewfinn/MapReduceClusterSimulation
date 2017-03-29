@@ -87,7 +87,6 @@ public class MapReduce {
 			// execute threads
 			for(Thread t : mapCluster) {
 				exe.execute(t);
-				System.out.println("Thread ID: "+t.getId() +" Executed");
 			}
 			exe.shutdown(); //kill executor
 			while (!exe.isTerminated());
