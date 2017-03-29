@@ -1,7 +1,7 @@
 /*
  * Name: Matthew Finn
  * Id: 13480362
- * 
+ *
  * Name: Shane McInerney
  * Id: 13339141
  * */
@@ -25,8 +25,9 @@ public class MapReduce {
 
 		MapReduce map = new MapReduce();
 
-		int threads = Integer.parseInt(args[0]); //maximum number of threads allowed......doesn't have to be cmd param necessarily.
+		int threads = Integer.parseInt(args[0]); //Maximum number of threads allowed
 
+		//Reading in file paths
 		String fname1 = args[1]; File f1 = new File(fname1);
 		String fname2 = args[2]; File f2 = new File(fname2);
 		String fname3 = args[3]; File f3 = new File(fname3);
@@ -34,11 +35,11 @@ public class MapReduce {
 		String fname5 = args[5]; File f5 = new File(fname5);
 
 		System.out.println("File Names: ");
-		System.out.println(f1.getName());
-		System.out.println(f2.getName());
-		System.out.println(f3.getName());
-		System.out.println(f4.getName());
-		System.out.println(f5.getName());
+		System.out.println("File 1: "+f1.getName());
+		System.out.println("File 2: "+f2.getName());
+		System.out.println("File 3: "+f3.getName());
+		System.out.println("File 4: "+f4.getName());
+		System.out.println("File 5: "+f5.getName());
 
 
 		ExecutorService exe = Executors.newFixedThreadPool(threads);
@@ -76,7 +77,7 @@ public class MapReduce {
 				Thread t = new Thread(new Runnable() {
 					@Override
 					public void run() {
-						
+
 						map(file, contents, mapCallback);
 					}
 				});
@@ -86,14 +87,12 @@ public class MapReduce {
 			// execute threads
 			for(Thread t : mapCluster) {
 				exe.execute(t);
-				System.out.println("Thread ID: "+t.getName() +" Executed");
+				System.out.println("Thread ID: "+t.getId() +" Executed");
 			}
 			exe.shutdown(); //kill executor
 			while (!exe.isTerminated());
 
-
 			// GROUP:
-
 			Map<String, List<String>> groupedItems = new HashMap<String, List<String>>();
 
 			Iterator<MappedItem> mappedIter = mappedItems.iterator();
@@ -140,15 +139,20 @@ public class MapReduce {
 			// wait for reducing phase to be over: Being run on threads
 			for(Thread t : reduceCluster) {
 				exe.execute(t);
-				
+
 			}
 
 			exe.shutdown();
 			while (!exe.isTerminated());
 
 			System.out.println("Character Count Being Run On " + threads + " Threads.");
-			System.out.println(output);
-			
+
+			//Iterating over output hashmap and printing content
+			Iterator it = output.entrySet().iterator();
+			while (it.hasNext()) {
+				Map.Entry pair = (Map.Entry)it.next();
+				System.out.println(pair.getKey() + " = " + pair.getValue());
+			}
 		}
 	}
 
